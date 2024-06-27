@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Conversation</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f0f2f5;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+        h1 {
+            color: #4CAF50;
+            margin-bottom: 20px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 10px;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        h2 {
+            margin-top: 30px;
+            color: #555;
+        }
+        p {
+            background: white;
+            border: 1px solid #ddd;
+            padding: 15px;
+            border-radius: 4px;
+            width: 80%;
+            max-width: 800px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            margin-top: 10px;
+        }
+        #buttons-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        #responses-container {
+            width: 100%;
+            max-width: 800px;
+        }
+    </style>
+    <script>
+        async function startConversation(person) {
+            const response = await fetch('/start_conversation', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ person: person })
+            });
+            const data = await response.json();
+            document.getElementById('assistant-response').innerText = data.response;
+            document.getElementById('translated-response').innerText = data.translated_response;
+        }
+
+        async function getSpeechInput() {
+            const response = await fetch('/get_response', {
+                method: 'POST'
+            });
+            const data = await response.json();
+            document.getElementById('user-input').innerText = data.user_input_text;
+            document.getElementById('translated-input').innerText = data.translated_input_text;
+            document.getElementById('assistant-response').innerText = data.response;
+            document.getElementById('translated-response').innerText = data.translated_response;
+        }
+    </script>
+</head>
+<body>
+    <h1>Interactive Conversation</h1>
+    <div id="buttons-container">
+        <button onclick="startConversation(1)">Family Mart Shopkeeper</button>
+        <button onclick="startConversation(2)">Railway Ticket Officer</button>
+        <button onclick="startConversation(3)">Policeman</button>
+    </div>
+    <div id="responses-container">
+        <h2>Assistant Response</h2>
+        <p id="assistant-response"></p>
+        <h2>Translated Response</h2>
+        <p id="translated-response"></p>
+        <h2>User Input</h2>
+        <button onclick="getSpeechInput()">Speak</button>
+        <p id="user-input"></p>
+        <h2>Translated Input</h2>
+        <p id="translated-input"></p>
+    </div>
+</body>
+</html>
